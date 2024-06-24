@@ -1,7 +1,8 @@
 #include "blok.h"
 #include <Arduino.h>
+#include <Zumo32U4Motors.h> // Include the actual header for Zumo32U4Motors
 
-Blok::Blok() : xbee(Serial1) {}
+Blok::Blok() : motors(), xbee(Serial1) {}
 
 void Blok::init()
 {
