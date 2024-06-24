@@ -1,9 +1,11 @@
 #ifndef BLOK_H
 #define BLOK_H
 
-#include <Zumo32U4.h>
 #include "MyZumo32U4Proximity.h"
 #include "XBeeCommunicator.h"
+
+// Forward declaration of Zumo32U4Motors class
+class Zumo32U4Motors;
 
 const uint8_t sensorThreshold = 1;
 const uint16_t turnSpeedMax = 400;
@@ -25,7 +27,7 @@ public:
     void loop();
 
 private:
-    Zumo32U4Motors motors;
+    Zumo32U4Motors motors; // Now only declared, not included
     Zumo32U4ButtonA buttonA;
     MyZumo32U4Proximity proxSensors;
     XBeeCommunicator xbee;
