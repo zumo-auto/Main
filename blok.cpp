@@ -1,6 +1,6 @@
 #include "blok.h"
 #include <Arduino.h>
-#include <Zumo32U4Motors.h> // Include the actual header for Zumo32U4Motors
+#include <Zumo32U4Motors.h>
 
 Blok::Blok() : motors(), xbee(Serial1) {}
 
@@ -38,6 +38,13 @@ void Blok::stop()
     turningRight = false;
 }
 
+void Blok::moveForward()
+{
+    motors.setSpeeds(forwardSpeed, forwardSpeed);
+    turningLeft = false;
+    turningRight = false;
+}
+
 void Blok::loop()
 {
     proxSensors.readSensors();
@@ -57,10 +64,12 @@ void Blok::loop()
 
     turnSpeed = constrain(turnSpeed, turnSpeedMin, turnSpeedMax);
 
-    if (objectSeen)
+    if (leftValue >= 3 && rightValue >= 3)
     {
-        ledYellow(1);
-
+        moveForward();
+    }
+    else if (objectSeen)
+    {
         lastTimeObjectSeen = millis();
 
         if (leftValue < rightValue)
@@ -80,8 +89,6 @@ void Blok::loop()
     }
     else
     {
-        ledYellow(0);
-
         if (senseDir == RIGHT)
         {
             turnRight();
