@@ -1,5 +1,5 @@
-#ifndef LINE_SENSOR_H
-#define LINE_SENSOR_H
+#ifndef LINESENSOR_H
+#define LINESENSOR_H
 
 #include <Zumo32U4.h>
 
