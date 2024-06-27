@@ -1,18 +1,25 @@
-#ifndef LINESENSOR_H
-#define LINESENSOR_H
+#ifndef LINE_SENSOR_H
+#define LINE_SENSOR_H
 
 #include <Zumo32U4.h>
 
-class LineSensor {
+class Line_sensor {
+
 public:
-    LineSensor();
-    void calibrateSensors(Zumo32U4Motors& motors);
-    int16_t readLineSensor();
-    unsigned int* getLineSensorValues(); // Add this line
+  ColorSensor();
+  void begin();
+  void detectColor();
+  uint16_t sensor1();
+  uint16_t sensor2();
+  uint16_t sensor3();
 
 private:
-    Zumo32U4LineSensors lineSensors;
-    unsigned int lineSensorValues[5];
+  Zumo32U4LineSensors lineSensors;
+  uint16_t sensorValues[3];
+  uint16_t sensor11;
+  uint16_t sensor22;
+  uint16_t sensor33;
+
 };
 
-#endif // LINESENSOR_H
+#endif
