@@ -1,23 +1,23 @@
 #ifndef MOTORS_H
 #define MOTORS_H
 
-#include "Arduino.h"
-#include <Wire.h>
 #include <Zumo32U4.h>
 
 class Motors {
 public:
-    Motors(int, int, String);
-    void setSpeeds();
+    Motors();
+    void setSpeeds(int16_t leftSpeed, int16_t rightSpeed);
+    void updateSpeedsBasedOnColor(const String& color);
     Zumo32U4Motors& getMotors();
-    static uint16_t getMaxSpeed() { return maxSpeed; } // Add this line
+    int16_t getLeftSpeed() const;
+    int16_t getRightSpeed() const;
+
+    uint16_t maxSpeed;
 
 private:
-    int links;
-    int rechts;
-    String kleure;
     Zumo32U4Motors motors;
-    static const uint16_t maxSpeed;
+    int16_t leftSpeed;
+    int16_t rightSpeed;
 };
 
 #endif // MOTORS_H
