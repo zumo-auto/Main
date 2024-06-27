@@ -1,31 +1,42 @@
 #include "Motors.h"
 
-// Initialize the static member maxSpeed
-const uint16_t Motors::maxSpeed = 320;
+Motors::Motors() : leftSpeed(0), rightSpeed(0), maxSpeed(320) {}
 
-Motors::Motors(int lSpeed, int rSpeed, String h) : links(lSpeed), rechts(rSpeed), kleure(h) {
-    // Initialization of member variables done in the initializer list
+void Motors::setSpeeds(int16_t leftSpeed, int16_t rightSpeed) {
+    motors.setSpeeds(leftSpeed, rightSpeed);
+    this->leftSpeed = leftSpeed;
+    this->rightSpeed = rightSpeed;
 }
 
-void Motors::setSpeeds() {
-    if (kleure == "Groen") {
-        links = 200;
-        rechts = 200;
-    } else if (kleure == "Zwart") {
-        links = 400;
-        rechts = 400;
-    } else if (kleure == "GrijsLinks") {
-        links = 400;
-        rechts = -400;
-    } else if (kleure == "Grijsrecht") {
-        links = -400;
-        rechts = 400;
-    } else if (kleure == "Grijsrecht" && kleure == "GrijsLinks") {
-        links = 0;
-        rechts = 0;
+void Motors::updateSpeedsBasedOnColor(const String& color) {
+    if (color == "Groen") {
+        maxSpeed = 160;
+    } else if (color == "Zwart") {
+        maxSpeed = 320;
+    } else if (color == "GrijsLinks") {
+        leftSpeed = 320;
+        rightSpeed = -320;
+        setSpeeds(leftSpeed, rightSpeed);
+    } else if (color == "GrijsRechts") {
+        leftSpeed = -320;
+        rightSpeed = 320;
+        setSpeeds(leftSpeed, rightSpeed);
+    } else if (color == "GrijsRechts" && color == "GrijsLinks") {
+        leftSpeed = 0;
+        rightSpeed = 0;
+        setSpeeds(leftSpeed, rightSpeed);
     }
 }
 
 Zumo32U4Motors& Motors::getMotors() {
     return motors;
 }
+
+int16_t Motors::getLeftSpeed() const {
+    return leftSpeed;
+}
+
+int16_t Motors::getRightSpeed() const {
+    return rightSpeed;
+}
+
