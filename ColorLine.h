@@ -9,15 +9,16 @@ public:
 ColorLine(int, int, int);
 void Color();
 bool isWithinRange(int, int, int);
-String kleure();
+String kleure1();
+String kleure2();
+String kleure3();
 
 private:
 
-bool Groen;
-bool Grijsrecht;
-bool GrijsLinks;
-bool Zwart;
-bool niks;
+char niks2;
+char niks3;
+char niks4;
+
 int iets;
 int iets1;
 int iets2;
