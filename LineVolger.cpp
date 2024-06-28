@@ -13,10 +13,10 @@ void LineVolger::loop() {
 }
 
 void LineVolger::followLine() {
+    // Assuming readLineSensor() now exists and reads the line sensor
     int16_t position = lineSensor.readLineSensor();
 
-    // Onze "error" is hoe ver we van het midden van de lijn verwijderd zijn,
-    // wat overeenkomt met positie 2000.
+    // Calculate the error based on the position
     int16_t error = position - 2000;
 
     computeAndSetSpeeds(error, lastError);
@@ -27,15 +27,14 @@ void LineVolger::followLine() {
 void LineVolger::computeAndSetSpeeds(int16_t error, int16_t lastError) {
     int16_t speedDifference = error / 0.75 + 20 * (error - lastError);
 
-    // Verkrijg individuele motorsnelheden. Het teken van speedDifference
-    // bepaalt of de robot naar links of naar rechts draait.
+    // Adjust motor speeds based on the computed error
     int16_t leftSpeed = motors.maxSpeed + speedDifference;
     int16_t rightSpeed = motors.maxSpeed - speedDifference;
 
-    // Beperk onze motorsnelheden tot tussen 0 en maxSpeed.
-    // Hierdoor draait hij niet om nadat hij wit of een andere kleur gemeten heeft.
-    leftSpeed = constrain(leftSpeed, -100, motors.maxSpeed);
-    rightSpeed = constrain(rightSpeed, -100, motors.maxSpeed);
+    // Constrain speeds to the allowed range
+    leftSpeed = constrain(leftSpeed, 0, motors.maxSpeed);
+    rightSpeed = constrain(rightSpeed, 0, motors.maxSpeed);
 
+    // Set the constrained speeds to the motors
     motors.setSpeeds(leftSpeed, rightSpeed);
 }
