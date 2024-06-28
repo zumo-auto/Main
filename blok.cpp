@@ -7,14 +7,6 @@ Blok::Blok() : motors(), xbee(Serial1) {}
 void Blok::init()
 {
     proxSensors.begin();
-    xbee.begin(9600);  // Initialize XBee communication
-
-    // Wait for the user to press A before driving the motors.
-    Serial.begin(9600);
-    while (!Serial) { }
-    Serial.println(F("Press A"));
-    buttonA.waitForButton();
-    Serial.println(F("Button Pressed"));
 }
 
 void Blok::turnRight()
@@ -97,21 +89,5 @@ void Blok::loop()
         {
             turnLeft();
         }
-    }
-
-    Serial.print(leftValue);
-    Serial.print(' ');
-    Serial.print(rightValue);
-    Serial.print(' ');
-    Serial.print(turningRight ? 'R' : (turningLeft ? 'L' : ' '));
-    Serial.print(' ');
-    Serial.print(turnSpeed);
-    Serial.println();
-
-    if (xbee.available()) {
-        char received = xbee.read();
-        Serial.print("Received: ");
-        Serial.println(received);
-        xbee.println("Acknowledged");
     }
 }
