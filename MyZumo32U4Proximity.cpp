@@ -6,7 +6,6 @@ MyZumo32U4Proximity::MyZumo32U4Proximity() {
 }
 
 void MyZumo32U4Proximity::begin() {
-    Serial1.begin(4800); // Set the bit rate for communication
     proxSensors.initThreeSensors(); // Initialize proximity sensors
 }
 
@@ -22,6 +21,7 @@ void MyZumo32U4Proximity::readSensors() {
     Serial1.println(frontRightSensorValue);
     delay(200);
 }
+
 
 int MyZumo32U4Proximity::getFrontLeftSensorValue() {
     return frontLeftSensorValue;
