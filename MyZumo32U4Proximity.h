@@ -2,6 +2,7 @@
 #define MYZUMO32U4PROXIMITY_H
 
 #include <Zumo32U4ProximitySensors.h>
+#include "XBeeCommunicator.h"
 
 class MyZumo32U4Proximity
 {
