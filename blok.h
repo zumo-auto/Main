@@ -33,7 +33,6 @@ public:
 
 private:
     Zumo32U4Motors motors;
-    Zumo32U4ButtonA buttonA;
     MyZumo32U4Proximity proxSensors;
     XBeeCommunicator xbee;
 
