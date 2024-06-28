@@ -39,4 +39,3 @@ int16_t Motors::getLeftSpeed() const {
 int16_t Motors::getRightSpeed() const {
     return rightSpeed;
 }
-
