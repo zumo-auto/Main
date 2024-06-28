@@ -2,7 +2,7 @@
 #define IMU_H
 
 #include <Wire.h>
-#include <Zumo32U4.h>
+#include <Zumo32U4IMU.h>
 #include "XBeeCommunicator.h"
 
 class IMU {
@@ -14,6 +14,7 @@ public:
   int getMagY();
   int getGyroX();
   int getGyroY();
+  int getGyroWipwapX();
   void sendIMUReport();
 
 private:
