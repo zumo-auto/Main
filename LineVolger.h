@@ -1,7 +1,7 @@
 #ifndef LINEVOLGER_H
 #define LINEVOLGER_H
 
-#include "LineSensor.h"
+#include "Line_sensor.h"
 #include "Motors.h"
 
 class LineVolger {
@@ -11,7 +11,7 @@ public:
     void calibrateSensors();
 
 private:
-    LineSensor lineSensor;
+    Line_sensor lineSensor;
     Motors motors;
     int16_t lastError;
 
