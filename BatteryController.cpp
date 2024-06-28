@@ -1,13 +1,13 @@
 #include "BatteryController.h"
 
-BatteryController::BatteryController() : xbeeCommunicator(nullptr) {}
+BatteryController::BatteryController() : xbeeCommunicator() {}
 
 void BatteryController::setXBeeCommunicator(XBeeCommunicator* communicator) {
     xbeeCommunicator = communicator;
 }
 
 void BatteryController::checkBattery() {
-    delay(2000);
+    delay(200);
     // Controleren of er USB-stroom aanwezig is
     bool usbPower = usbPowerPresent();
 
