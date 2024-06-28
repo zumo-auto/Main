@@ -11,7 +11,10 @@ void IMU::init() {
     }
   }
   imu.enableDefault();
+  imu.configureForFaceUphill();
 }
+
+
 
 void IMU::read() {
   imu.read();
@@ -26,11 +29,15 @@ int IMU::getMagY() {
 }
 
 int IMU::getGyroX() {
-  return ((float)(imu.a.x) / ( 32767/180 ));
+  return ((float)(imu.a.x) / (32767/180 ));
 }
 
 int IMU::getGyroY() {
   return ((float)(imu.a.y) / (32767/180 ));
+}
+
+int IMU::getGyroWipwapX() {
+  return ((float)(imu.a.x) / ( 22 ));
 }
 
 void IMU::sendIMUReport() {
@@ -38,5 +45,5 @@ void IMU::sendIMUReport() {
   snprintf(report, sizeof(report), "Gyroscope: X:%d Y:%d", 
   getGyroX(), getGyroY());
   xbeeCom.println(report);
-  delay(100);
+  delay(200);
 }
