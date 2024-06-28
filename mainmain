@@ -1,0 +1,16 @@
+#include "LineVolger.h"
+
+LineVolger lineVolger;
+Zumo32U4ButtonA buttonA;
+
+void setup() {
+    lineVolger.setup();
+    buttonA.waitForButton(); // Wait for button A to start calibration
+    lineVolger.calibrateSensors();
+    buttonA.waitForButton(); // Wait for button A to start line following
+}
+
+void loop() {
+    lineVolger.loop();
+}
+
