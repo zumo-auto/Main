@@ -1,67 +1,120 @@
-#include <Wire.h>
-#include <Zumo32U4.h>
+#include "Arduino.h"
+#include "IMU.h"
+#include "XBeeCommunicator.h"
+#include "WipWap.h"
+#include "BatteryController.h"
+#include "blok.h"
+#include "MyZumo32U4Proximity.h"
+#include "Line_sensor.h"
+#include "ColorLine.h"
+#include "Motors.h"
+#include "LineVolger.h"
 
-const int16_t maxSpeed = 120;
-const int16_t motorSpeed = 80; // Versnelde motor snelheid
-const int16_t deadzone = 69;
-const unsigned long stillTime = 5000; // 5 seconden stilstaan
-const unsigned long hysteresisTime = 40; // Versnelde hysteresis tijd
 
-Zumo32U4IMU imu;
-Zumo32U4Motors motors;
-Zumo32U4Encoders encoders;
+XBeeCommunicator xbeeCommunicator(Serial1);
+XBeeCommunicator xbeeComm(Serial1);
+BatteryController batteryController;
+IMU imu(xbeeCommunicator);
+WipWap WipWap;
+Blok blok;
+Line_sensor liner;
+LineVolger lineFollower;
+Motors mot;
 
-unsigned long lastMovementTime = 0;
-unsigned long inDeadzoneStartTime = 0;
-unsigned long lastPrintTime = 0;
-const unsigned long printInterval = 200; // Print interval in milliseconds (0.2 seconds)
+char Test;
+int waarde;
+int hoor1 = 0;
+int hoor2 = 0;
+int hoor3 = 0;
+
 
 void setup() {
-Serial1.begin(4800); // Gebruik Serial1 voor de XBee of andere module
-Wire.begin();
-delay(50);
-imu.init();
-imu.enableDefault();
-imu.configureForFaceUphill();
+  xbeeCommunicator.begin(4800);
+  Serial.begin(4800);
+  imu.init();
+  batteryController.setXBeeCommunicator(&xbeeCommunicator);
+  WipWap.setup();
+  blok.init();
+  lineFollower.setup();
 }
+
+enum State {
+  STATE_NONE,
+  STATE_IMU,
+  STATE_WIPWAP,
+  STATE_BLOK,
+  STATE_VOLGEN,
+  STATE_VOLGENCALI,
+  STATE_KLEURENCHECK
+};
+
+State currentState = STATE_NONE;
 
 void loop() {
-unsigned long currentMillis = millis();
-int16_t x = 0; // Declare x outside the print interval block
+  if (xbeeComm.available()) {
+    Test = xbeeComm.read();
+    switch (Test) {
+      case '1':
+        xbeeComm.println("test");
+        break;
+      case '2':
+    currentState = STATE_IMU;
+        break;
+      case '3':
+    currentState = STATE_WIPWAP;
+       break;
+      case '4':
+    currentState = STATE_BLOK;
+        break;
+      case '5':
+    currentState = STATE_VOLGEN;
+      break;
+      case '0':
+    currentState = STATE_VOLGENCALI;
+      break;
+      case '9':
+      currentState = STATE_KLEURENCHECK;
+      break;
+    }
+  }
+  
+  
+  
+  if (currentState == STATE_IMU) {
+    imu.sendIMUReport();
+    batteryController.checkBattery();
+  } 
+  else if (currentState == STATE_WIPWAP) {
+    WipWap.loop();
+  }
+  else if (currentState == STATE_BLOK) {
+    blok.loop();
+  }
+  else if (currentState == STATE_VOLGEN){
+    lineFollower.loop();
+    
+  }
+  else if (currentState == STATE_VOLGENCALI){
+   lineFollower.calibrateSensors();
+  }
+  else if (currentState == STATE_KLEURENCHECK){
+    liner.detectColor();
+  hoor1 = liner.sensor1();
+  hoor2 = liner.sensor2();
+  hoor3 = liner.sensor3();
 
-// Check if it's time to read and print gyroscopic data
-if (currentMillis - lastPrintTime >= printInterval) {
-imu.readAcc(); // Lees de accelerometergegevens
-x = imu.a.x / 22; // Gebruik imu.a.x als gyroscopische waarde
+  ColorLine color(hoor1, hoor2, hoor3);
+  color.Color();
 
-Serial1.println(x); // Stuur de waarde naar Serial1 (XBee)
-
-lastPrintTime = currentMillis; // Update last print time
-}
-
-int16_t forwardSpeed = -(encoders.getCountsLeft() + encoders.getCountsRight());
-forwardSpeed = constrain(forwardSpeed, -maxSpeed, maxSpeed);
-
-if (abs(x) <= deadzone) {
-if (inDeadzoneStartTime == 0) {
-inDeadzoneStartTime = millis();
-}
-if (millis() - inDeadzoneStartTime >= hysteresisTime) {
-motors.setSpeeds(0, 0);
-if (millis() - lastMovementTime >= stillTime) {
-motors.setSpeeds(0, 0); // Stop de motoren
-}
-}
-} else {
-// Buiten de deadzone, beweeg de Zumo
-if (x > deadzone) {
-motors.setSpeeds(motorSpeed, motorSpeed);
-} else if (x < -deadzone) {
-motors.setSpeeds(-motorSpeed, -motorSpeed);
-delay(50);
-}
-// Reset de timer voor het stilstaan
-lastMovementTime = millis();
-inDeadzoneStartTime = 0;
-}
-}
+  Serial1.println(color.kleure1());
+  Serial1.println(color.kleure2());
+  Serial1.println(color.kleure3());
+  Serial1.println(hoor1);
+  Serial1.println(hoor2);
+  Serial1.println(hoor3);
+  color.Color();
+  mot.updateSpeedsBasedOnColor(color.kleure2());
+  delay(300);
+  }
+  }
+  
